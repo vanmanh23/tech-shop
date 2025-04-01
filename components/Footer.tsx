@@ -6,60 +6,68 @@ const Footer = () => {
   return (
     <footer className="bg-[#0066b2] text-white">
       {/* Newsletter Section */}
-      <div className="container mx-auto py-12 px-4 text-center">
-        <h2 className="text-2xl font-semibold mb-2">Subscribe to our newsletter</h2>
-        <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+      <div className="container mx-auto py-8 md:py-12 px-4 text-center">
+        <h2 className="text-xl md:text-2xl font-semibold mb-2">Subscribe to our newsletter</h2>
+        <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm md:text-base">
           Praesent fringilla erat a lacinia egestas. Donec vehicula tempus massa sit
           amet, Donec nec massa vitae. Cras nunc augue in dictum.
         </p>
-        <div className="flex max-w-md mx-auto">
+        <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-2 sm:gap-0">
           <input
             type="email"
             placeholder="Email address"
-            className="bg-white flex-1 px-4 py-2 rounded-l text-gray-800 focus:outline-none"
+            className="bg-white w-full px-4 py-2 sm:rounded-l sm:rounded-none text-gray-800 focus:outline-none rounded"
           />
-          <button className="bg-orange-500 text-white px-6 py-2 rounded-r flex items-center">
+          <button className="bg-orange-500 text-white px-6 py-2 sm:rounded-r sm:rounded-none flex items-center justify-center rounded">
             SUBSCRIBE
             <ChevronRight size={20} className="ml-1" />
           </button>
         </div>
 
         {/* Brand Logos */}
-        <div className="flex justify-center items-center gap-8 mt-12 grayscale opacity-70">
+        <div className="hidden md:flex justify-center items-center gap-8 mt-12 grayscale opacity-70">
           <span className="text-white">Google</span>
           <span className="text-white">Amazon</span>
           <span className="text-white">Philips</span>
           <span className="text-white">Toshiba</span>
           <span className="text-white">Samsung</span>
         </div>
+
+        {/* Mobile Brand Logos */}
+        <div className="flex md:hidden justify-center items-center gap-4 mt-8 grayscale opacity-70 flex-wrap">
+          <span className="text-white text-sm">Google</span>
+          <span className="text-white text-sm">Amazon</span>
+          <span className="text-white text-sm">Philips</span>
+          <span className="text-white text-sm">Toshiba</span>
+          <span className="text-white text-sm">Samsung</span>
+        </div>
       </div>
 
       {/* Main Footer */}
-      <div className="bg-gray-900 py-12">
+      <div className="bg-gray-900 py-8 md:py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {/* Company Info */}
-            <div>
-              <Link href="/" className="text-2xl font-bold mb-4 block">
+            <div className="text-center sm:text-left">
+              <Link href="/" className="text-xl md:text-2xl font-bold mb-4 block">
                 CLICON
               </Link>
-              <p className="text-gray-400 mb-4">
-                (8629) 555-0129<br />
-                4517 Washington Ave.<br />
-                Manchester, Kentucky 39495
+              <p className="text-gray-400 mb-4 text-sm md:text-base">
+                (8629) ****-****<br />
+                Barcelona, Spain<br />
               </p>
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">24/7 Hotline</span>
-                <Link href="/profile" className="text-orange-500 flex items-center">
+              <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <span className="text-gray-400 text-sm">24/7 Hotline</span>
+                <Link href="/profile" className="text-orange-500 flex items-center text-sm">
                   Browse all Profile <ChevronRight size={16} />
                 </Link>
               </div>
             </div>
 
             {/* Top Category */}
-            <div>
+            <div className="text-center sm:text-left">
               <h3 className="text-lg font-semibold mb-4">TOP CATEGORY</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-gray-400 text-sm md:text-base">
                 <li><Link href="/computer" className="hover:text-white">Computer & Laptop</Link></li>
                 <li><Link href="/smartphone" className="hover:text-white">SmartPhone</Link></li>
                 <li><Link href="/headphone" className="hover:text-white">Headphone</Link></li>
@@ -70,9 +78,9 @@ const Footer = () => {
             </div>
 
             {/* Quick Links */}
-            <div>
+            <div className="text-center sm:text-left">
               <h3 className="text-lg font-semibold mb-4">QUICK LINKS</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-gray-400 text-sm md:text-base">
                 <li><Link href="/shop" className="hover:text-white">Shop Product</Link></li>
                 <li><Link href="/cart" className="hover:text-white">Shopping Cart</Link></li>
                 <li><Link href="/wishlist" className="hover:text-white">Wishlist</Link></li>
@@ -84,9 +92,9 @@ const Footer = () => {
             </div>
 
             {/* Download App */}
-            <div>
+            <div className="text-center sm:text-left">
               <h3 className="text-lg font-semibold mb-4">DOWNLOAD APP</h3>
-              <div className="space-y-4">
+              <div className="space-y-4 text-sm md:text-base">
                 <Link href="#" className="block text-white hover:text-gray-200">
                   Google Play Store
                 </Link>
@@ -96,13 +104,13 @@ const Footer = () => {
               </div>
 
               <h3 className="text-lg font-semibold mt-8 mb-4">POPULAR TAG</h3>
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-gray-800 text-sm rounded hover:bg-gray-700 cursor-pointer">Game</span>
-                <span className="px-3 py-1 bg-gray-800 text-sm rounded hover:bg-gray-700 cursor-pointer">iPhone</span>
-                <span className="px-3 py-1 bg-gray-800 text-sm rounded hover:bg-gray-700 cursor-pointer">TV</span>
-                <span className="px-3 py-1 bg-gray-800 text-sm rounded hover:bg-gray-700 cursor-pointer">Asus Laptop</span>
-                <span className="px-3 py-1 bg-gray-800 text-sm rounded hover:bg-gray-700 cursor-pointer">Macbook</span>
-                <span className="px-3 py-1 bg-gray-800 text-sm rounded hover:bg-gray-700 cursor-pointer">SSD</span>
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                <span className="px-3 py-1 bg-gray-800 text-xs md:text-sm rounded hover:bg-gray-700 cursor-pointer">Game</span>
+                <span className="px-3 py-1 bg-gray-800 text-xs md:text-sm rounded hover:bg-gray-700 cursor-pointer">iPhone</span>
+                <span className="px-3 py-1 bg-gray-800 text-xs md:text-sm rounded hover:bg-gray-700 cursor-pointer">TV</span>
+                <span className="px-3 py-1 bg-gray-800 text-xs md:text-sm rounded hover:bg-gray-700 cursor-pointer">Asus Laptop</span>
+                <span className="px-3 py-1 bg-gray-800 text-xs md:text-sm rounded hover:bg-gray-700 cursor-pointer">Macbook</span>
+                <span className="px-3 py-1 bg-gray-800 text-xs md:text-sm rounded hover:bg-gray-700 cursor-pointer">SSD</span>
               </div>
             </div>
           </div>
@@ -111,8 +119,8 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="bg-gray-900 border-t border-gray-800 py-4">
-        <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
-          © 2024 eCommerce Template © 2024. Design by DeoThemes.com
+        <div className="container mx-auto px-4 text-center text-gray-400 text-xs md:text-sm">
+          © 2024 eCommerce Template © 2024. Design by Manh Nguyen
         </div>
       </div>
     </footer>

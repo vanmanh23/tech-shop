@@ -2,11 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import CategorySidebar from '@/components/CategorySidebar';
 
-// Mock products data
 const products = [
   {
     id: 1,
@@ -82,6 +81,8 @@ const products = [
 export default function Home() {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [sortOption, setSortOption] = useState('featured');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handlePriceChange = (min: number, max: number) => {
     setFilteredProducts(
@@ -103,7 +104,6 @@ export default function Home() {
         sorted.sort((a, b) => b.rating - a.rating);
         break;
       default:
-        // Featured - no sorting needed
         sorted = products;
     }
     setFilteredProducts(sorted);
@@ -121,6 +121,12 @@ export default function Home() {
     window.location.href = `/product/${productId}`;
   };
 
+  const handleCategoryChange = (category: string) => {
+    console.log(selectedCategory);
+    setSelectedCategory(category);
+    // setFilteredProducts(products.filter(product => product.category === category));
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
@@ -130,26 +136,64 @@ export default function Home() {
         <span>Electronics Devices</span>
       </div>
 
-      <div className="flex gap-8">
-        {/* Sidebar */}
-        <div className="w-72 flex-shrink-0">
-          <CategorySidebar onPriceChange={handlePriceChange} />
+      {/* Mobile Filter Button */}
+      <div className="lg:hidden mb-4">
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="w-full bg-white p-3 rounded-lg shadow-sm flex items-center justify-between"
+        >
+          <span>Filters</span>
+          <ChevronRight
+            size={20}
+            className={`transform transition-transform ${isSidebarOpen ? 'rotate-90' : ''}`}
+          />
+        </button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sidebar - Desktop & Mobile */}
+        <div className={`
+          fixed lg:static inset-0 z-50 lg:z-auto
+          transform transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          lg:w-72 flex-shrink-0
+        `}>
+          <div className="lg:block bg-white h-full lg:h-auto p-4 lg:p-0">
+            {/* Close button for mobile */}
+            <div className="flex justify-end mb-4 lg:hidden">
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <X size={24} className="text-gray-600" />
+              </button>
+            </div>
+            <CategorySidebar onPriceChange={handlePriceChange} onCategoryChange={handleCategoryChange} />
+          </div>
         </div>
+
+        {/* Overlay for mobile sidebar */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
         {/* Main Content */}
         <div className="flex-1">
           {/* Sort and Filter Bar */}
           <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="text-gray-600">
                 {filteredProducts.length} items found
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-gray-600">Sort by:</span>
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <span className="text-gray-600 whitespace-nowrap">Sort by:</span>
                 <select
                   value={sortOption}
                   onChange={(e) => handleSort(e.target.value)}
-                  className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 sm:flex-none border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="featured">Featured</option>
                   <option value="price-asc">Price: Low to High</option>
@@ -161,7 +205,7 @@ export default function Home() {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

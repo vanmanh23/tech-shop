@@ -1,7 +1,12 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Star, Heart, ShoppingCart, Eye } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useShop } from '@/context/ShopContext';
+import toast from 'react-hot-toast';
 
 interface ProductCardProps {
   id: number;
@@ -30,6 +35,27 @@ const ProductCard = ({
   onAddToWishlist,
   onQuickView,
 }: ProductCardProps) => {
+  const { requireAuth } = useAuth();
+  const { addToCart, addToWishlist } = useShop();
+
+  const handleAddToCart = (id: number) => {
+    const token = localStorage.getItem('access_token');
+    console.log("cardproduct: ", token);
+    if (!token) {
+      toast.error('Please login to add to cart');
+      return;
+    } else {
+      // addToCart(id);
+      window.location.href = '/product/1';
+    }
+  };
+
+  const handleAddToWishlist = () => {
+    if (requireAuth()) {
+      addToWishlist(id);
+    }
+  };
+
   return (
     <div className="group relative">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -58,7 +84,7 @@ const ProductCard = ({
           {/* Quick Action Buttons */}
           <div className="absolute right-2 top-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
-              onClick={() => onAddToWishlist?.(id)}
+              onClick={handleAddToWishlist}
               className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-500 transition-colors"
               title="Add to Wishlist"
             >
@@ -104,11 +130,11 @@ const ProductCard = ({
               ${price.toFixed(2)}
             </div>
             <button
-              onClick={() => onAddToCart?.(id)}
+              onClick={() => handleAddToCart(id)}
               className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
               title="Add to Cart"
             >
-              <ShoppingCart size={18} />
+              <ShoppingCart size={20} />
             </button>
           </div>
         </div>

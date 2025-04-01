@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
 const categories = [
@@ -13,15 +13,14 @@ const categories = [
   { id: 8, name: 'Camera & Photo', href: '/camera', count: 8765 },
   { id: 9, name: 'TV & Screen Appliances', href: '/tv', count: 7654 },
   { id: 10, name: 'Watch & Accessories', href: '/watch', count: 6543 },
-  { id: 11, name: 'GPS & Navigation', href: '/gps', count: 5432 },
-  { id: 12, name: 'Wearable Technology', href: '/wearable', count: 4321 },
 ];
 
 interface CategorySidebarProps {
   onPriceChange?: (min: number, max: number) => void;
+  onCategoryChange?: (category: string) => void;
 }
 
-const CategorySidebar = ({ onPriceChange }: CategorySidebarProps) => {
+const CategorySidebar = ({ onPriceChange, onCategoryChange }: CategorySidebarProps) => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [activeCategory, setActiveCategory] = useState<number>(1);
 
@@ -31,21 +30,25 @@ const CategorySidebar = ({ onPriceChange }: CategorySidebarProps) => {
     setPriceRange(newRange);
     onPriceChange?.(newRange[0], newRange[1]);
   };
-
+  const handleCategoryChange = (categoryname: string, categoryid: number) => {
+    setActiveCategory(categoryid);
+    onCategoryChange?.(categoryname);
+  };
   return (
     <div className="w-72 bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-lg font-semibold mb-6">CATEGORY</h2>
       <ul className="space-y-3">
         {categories.map((category) => (
           <li key={category.id}>
-            <Link 
-              href={category.href}
+            <div 
+              // href={category.href}
               className={`flex items-center justify-between py-1 px-2 rounded-md transition-colors ${
                 activeCategory === category.id 
                   ? 'bg-blue-50 text-blue-600' 
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
-              onClick={() => setActiveCategory(category.id)}
+              // onClick={() => setActiveCategory(category.id)}
+              onClick={() => handleCategoryChange(category.name, category.id)}
             >
               <div className="flex items-center">
                 <span>{category.name}</span>
@@ -54,7 +57,7 @@ const CategorySidebar = ({ onPriceChange }: CategorySidebarProps) => {
                 <span>({category.count.toLocaleString()})</span>
                 <ChevronRight size={16} className="ml-1" />
               </div>
-            </Link>
+            </div>
           </li>
         ))}
       </ul>

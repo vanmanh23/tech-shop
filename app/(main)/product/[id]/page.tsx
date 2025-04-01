@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Star, Plus, Minus, Heart, Share2, ShoppingBag, Check } from 'lucide-react';
 import { useShop } from '@/context/ShopContext';
 import { toast } from 'react-hot-toast';
+import { ShopProvider } from '@/context/ShopContext';
 
 // Mock product data
 const product = {
@@ -40,7 +41,7 @@ const product = {
   `
 };
 
-export default function ProductDetail() {
+function ProductDetailContent() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addToCart, addToWishlist, isInWishlist } = useShop();
@@ -231,7 +232,6 @@ export default function ProductDetail() {
               <div className="flex gap-2">
                 <Image src="/payment-icons/visa.png" alt="Visa" width={40} height={25} />
                 <Image src="/payment-icons/mastercard.png" alt="Mastercard" width={40} height={25} />
-                <Image src="/payment-icons/amex.png" alt="American Express" width={40} height={25} />
                 <Image src="/payment-icons/paypal.png" alt="PayPal" width={40} height={25} />
               </div>
             </div>
@@ -239,5 +239,13 @@ export default function ProductDetail() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductDetail() {
+  return (
+    <ShopProvider>
+      <ProductDetailContent />
+    </ShopProvider>
   );
 } 
