@@ -29,6 +29,11 @@ export default function AdminLayout({
       icon: LayoutDashboard
     },
     {
+      title: 'Categories',
+      href: '/admin/categories',
+      icon: LayoutDashboard
+    },
+    {
       title: 'Products',
       href: '/admin/products',
       icon: Package

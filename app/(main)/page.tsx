@@ -1,94 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import CategorySidebar from '@/components/CategorySidebar';
-
-const products = [
-  {
-    id: 1,
-    name: "POCO X5 Pro 5G Global Version",
-    price: 299.99,
-    image: "/products/phone-1.jpg",
-    rating: 4.5,
-    reviews: 1234,
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Samsung 34-inch Ultra WQHD Monitor",
-    price: 449.99,
-    image: "/products/monitor-1.jpg",
-    rating: 4.8,
-    reviews: 856,
-    isBestSeller: true,
-  },
-  {
-    id: 3,
-    name: "Sony WH-1000XM4 Wireless Headphones",
-    price: 349.99,
-    image: "/products/headphone-1.jpg",
-    rating: 4.7,
-    reviews: 2341,
-  },
-  {
-    id: 4,
-    name: "DJI Mini 2 SE Drone",
-    price: 299.99,
-    image: "/products/drone-1.jpg",
-    rating: 4.6,
-    reviews: 567,
-  },
-  {
-    id: 5,
-    name: "Lenovo Legion Pro 5",
-    price: 1299.99,
-    image: "/products/laptop-1.jpg",
-    rating: 4.9,
-    reviews: 432,
-    isNew: true,
-  },
-  {
-    id: 6,
-    name: "ASUS ROG Swift 27-inch Gaming Monitor",
-    price: 699.99,
-    image: "/products/monitor-2.jpg",
-    rating: 4.7,
-    reviews: 765,
-  },
-  {
-    id: 7,
-    name: "Samsung Galaxy S24 Ultra",
-    price: 1199.99,
-    image: "/products/phone-2.jpg",
-    rating: 4.8,
-    reviews: 1543,
-    isNew: true,
-  },
-  {
-    id: 8,
-    name: "Apple MacBook Air M2",
-    price: 1099.99,
-    image: "/products/laptop-2.jpg",
-    rating: 4.9,
-    reviews: 2134,
-    isBestSeller: true,
-  }
-];
+import SidebarSkeleton from '@/components/Skeleton/SidebarSkeleton';
+import ProductCardSkeleton from '@/components/Skeleton/ProductCardSkeleton';
+import { getProductsByCategoryId } from '@/lib/api/categories';
+import { getProducts } from '@/lib/api/products';
+import { Product } from '@prisma/client';
+import { useSearch } from '@/context/SearchContext';
+import { useShop } from '@/context/ShopContext';
 
 export default function Home() {
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const { searchParams } = useSearch();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState('featured');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [lengthProducts, setLengthProducts] = useState(0);
 
   const handlePriceChange = (min: number, max: number) => {
     setFilteredProducts(
       products.filter(product => product.price >= min && product.price <= max)
     );
   };
+  const { getTotalItems } = useShop();
 
   const handleSort = (option: string) => {
     setSortOption(option);
@@ -109,23 +49,95 @@ export default function Home() {
     setFilteredProducts(sorted);
   };
 
-  const handleAddToCart = (productId: number) => {
+  const handleAddToCart = (productId: string) => {
     window.location.href = `/product/${productId}`;
   };
 
-  const handleAddToWishlist = (productId: number) => {
+  const handleAddToWishlist = (productId: string) => {
     window.location.href = `/product/${productId}`;
   };
 
-  const handleQuickView = (productId: number) => {
+  const handleQuickView = (productId: string) => {
     window.location.href = `/product/${productId}`;
   };
 
-  const handleCategoryChange = (category: string) => {
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
     console.log(selectedCategory);
-    setSelectedCategory(category);
     // setFilteredProducts(products.filter(product => product.category === category));
   };
+
+  useEffect(() => {
+    const fetchProductsByCategory = async () => {
+      const res = await getProductsByCategoryId(selectedCategory);
+      console.log(res);
+      setFilteredProducts(res);
+      setProducts(res);
+      if (res.length === 0) {
+        setLengthProducts(0);
+      } else {
+        setLengthProducts(res.length);
+      }
+    }
+    fetchProductsByCategory();
+  }, [selectedCategory]);
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        fetch('/api/auth/verify', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          localStorage.setItem('userId', data.userId);
+        })
+        .catch(error => {
+          console.error("Error verifying token:", error);
+        });
+      } catch (error) {
+        console.error("Error verifying token:", error);
+      }
+    }
+    const fetchProducts = async () => {
+      try {
+        const res = await getProducts();
+        setProducts(res);
+        setFilteredProducts(res);
+        if (res.length === 0) {
+          setLengthProducts(0);
+        } else {
+          setLengthProducts(res.length);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getTotalItems();
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchProductsBySearch = async () => {
+      const response = await fetch(`/api/products/search?${new URLSearchParams(searchParams).toString()}`);
+      const data = await response.json();
+      setProducts(data.products);
+      setFilteredProducts(data.products);
+      if (data?.products?.length === 0) {
+        setLengthProducts(0);
+      } else {
+        setLengthProducts(data?.products?.length || 0);
+      }
+    }
+    fetchProductsBySearch();
+  }, [searchParams])
+
+
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -168,7 +180,14 @@ export default function Home() {
                 <X size={24} className="text-gray-600" />
               </button>
             </div>
-            <CategorySidebar onPriceChange={handlePriceChange} onCategoryChange={handleCategoryChange} />
+            {isLoading ? (
+              <SidebarSkeleton />
+            ) : (
+              <CategorySidebar 
+                onPriceChange={handlePriceChange} 
+                onCategoryChange={handleCategoryChange} 
+              />
+            )}
           </div>
         </div>
 
@@ -186,7 +205,7 @@ export default function Home() {
           <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="text-gray-600">
-                {filteredProducts.length} items found
+                {lengthProducts} items found
               </div>
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <span className="text-gray-600 whitespace-nowrap">Sort by:</span>
@@ -198,7 +217,7 @@ export default function Home() {
                   <option value="featured">Featured</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
-                  <option value="rating">Best Rating</option>
+                  {/* <option value="rating">Best Rating</option> */}
                 </select>
               </div>
             </div>
@@ -206,19 +225,28 @@ export default function Home() {
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                {...product}
-                onAddToCart={handleAddToCart}
-                onAddToWishlist={handleAddToWishlist}
-                onQuickView={handleQuickView}
-              />
-            ))}
+            {isLoading ? (
+              // Show skeleton loading for products
+              [...Array(8)].map((_, index) => (
+                <ProductCardSkeleton key={index} />
+              ))
+            ) : (
+              // Show actual products
+              filteredProducts?.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  {...product}
+                  image={product.images[0]}
+                  onAddToCart={handleAddToCart}
+                  onAddToWishlist={handleAddToWishlist}
+                  onQuickView={handleQuickView}
+                />
+              ))
+            )}
           </div>
 
           {/* Empty State */}
-          {filteredProducts.length === 0 && (
+          {!isLoading && lengthProducts === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600">No products found matching your criteria.</p>
             </div>

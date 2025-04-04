@@ -9,10 +9,8 @@ const prisma = new PrismaClient();
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    console.log("data111111111: ", data);
     // Validate input data
     const validationResult = signUpSchema.safeParse(data);
-    console.log("validationResult: ", validationResult);
     if (!validationResult.success) {
       return NextResponse.json(
         { 

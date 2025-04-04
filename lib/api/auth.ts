@@ -95,3 +95,24 @@ export async function signUp(data: SignUpData) {
     throw error;
   }
 }
+
+export async function verifyToken(token: string) {
+  try {
+    const response = await fetch('/api/auth/verify', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    const data = await response.json();
+    return data.userId;
+    // .then(res => res.json())
+    // .then(data => {
+    //   return data.userId;
+    // })
+    // .catch(error => {
+    //   console.error("Error verifying token:", error);
+    // });
+  } catch (error) {
+    console.error("Error verifying token:", error);
+  }
+}

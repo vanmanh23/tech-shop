@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingCart, Heart, User, Phone, ChevronDown, Facebook, Twitter, Instagram, Menu, X, Settings, LogIn, UserPlus, LogOut  } from 'lucide-react';
+import { useSearch } from '@/context/SearchContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +11,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useShop } from '@/context/ShopContext';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { searchParams, setSearchParams } = useSearch();
+  const [searchText, setSearchText] = useState('');
+  const { totalItems } = useShop();
+const token = localStorage.getItem('access_token');
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setSearchParams({ ...searchParams, query: searchText });
+    }
+  };
+
   const handleSignOut = () => {
     localStorage.removeItem('access_token');
     window.location.href = '/';
@@ -54,9 +67,15 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Search for anything..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyPress={handleKeyPress}
                 className="bg-white w-full px-4 py-2 rounded text-gray-800 focus:outline-none"
               />
-              <button className="absolute right-0 top-0 h-full px-4 bg-gray-100 rounded-r">
+              <button 
+                onClick={() => setSearchParams({ ...searchParams, query: searchText })}
+                className="absolute right-0 top-0 h-full px-4 bg-gray-100 rounded-r cursor-pointer"
+              >
                 <Search className="text-gray-600" size={20} />
               </button>
             </div>
@@ -72,7 +91,7 @@ const Header = () => {
             <Link href="/shoppingcard" className="relative">
               <ShoppingCart size={20} />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                0
+                {totalItems}
               </span>
             </Link>
             <Link href="/wishlist">
@@ -85,7 +104,10 @@ const Header = () => {
                 <User size={20} className="hover:text-gray-200 transition-colors" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem className="cursor-pointer">
+                {
+                  !token && (
+                    <>
+                    <DropdownMenuItem className="cursor-pointer">
                   <Link href="/signin" className="flex items-center w-full">
                     <LogIn className="mr-2 h-4 w-4" />
                     <span>Sign In</span>
@@ -97,25 +119,34 @@ const Header = () => {
                     <span>Sign Up</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                </>
+                  )
+                }
+               
+                
                 <DropdownMenuItem className="cursor-pointer">
                   <Link href="/shoppingcard" className="flex items-center w-full">
                     <ShoppingCart className="mr-2 h-4 w-4" />
                     <span>Shopping Cart</span>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem className="cursor-pointer">
                   <Link href="/settings" className="flex items-center w-full">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
+                 {
+                  token && (
+                    <DropdownMenuItem className="cursor-pointer">
                   <div onClick={handleSignOut} className="flex items-center w-full">
                     <LogOut  className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
                   </div>
                 </DropdownMenuItem>
+                  )
+                }
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -147,9 +178,15 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search for anything..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyPress={handleKeyPress}
               className="bg-white w-full px-4 py-2 rounded text-gray-800 focus:outline-none"
             />
-            <button className="absolute right-0 top-0 h-full px-4 bg-gray-100 rounded-r">
+            <button 
+              onClick={() => setSearchParams({ ...searchParams, query: searchText })}
+              className="absolute right-0 top-0 h-full px-4 bg-gray-100 rounded-r cursor-pointer"
+            >
               <Search className="text-gray-600" size={20} />
             </button>
           </div>

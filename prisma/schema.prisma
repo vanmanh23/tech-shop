@@ -17,22 +17,46 @@ model User {
   updatedAt DateTime @updatedAt
   cart      Cart[]
   wishlist  Wishlist[]
+  // wishlist  Product[] @relation("UserToWishlist")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Product {
   id          String     @id @default(cuid())
   name        String
   price       Float
-  image       String
+  images      String[]
   description String?
+  brand       String?
+  processor   String?
+  memory      String?
+  storage     String?
+  model       String?
+  display     String?
+  color       String?
+  camera      String?
+  battery     String?
   rating      Float      @default(0)
   reviews     Int        @default(0)
   isNew       Boolean    @default(false)
   isBestSeller Boolean   @default(false)
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   cart        Cart[]
   wishlist    Wishlist[]
+  // users       User[]     @relation("UserToWishlist")
 }
 
 model Cart {

@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { Category } from '@prisma/client';
+import { getAllCategories } from '@/lib/api/categories';
 
-const categories = [
-  { id: 1, name: 'Electronics Devices', href: '/electronics', count: 65867 },
-  { id: 2, name: 'Computer & Laptop', href: '/computer', count: 45231 },
-  { id: 3, name: 'Computer Accessories', href: '/accessories', count: 32145 },
-  { id: 4, name: 'SmartPhone', href: '/smartphone', count: 28976 },
-  { id: 5, name: 'Headphone', href: '/headphone', count: 15678 },
-  { id: 6, name: 'Mobile Accessories', href: '/mobile-accessories', count: 12543 },
-  { id: 7, name: 'Gaming Console', href: '/gaming', count: 9876 },
-  { id: 8, name: 'Camera & Photo', href: '/camera', count: 8765 },
-  { id: 9, name: 'TV & Screen Appliances', href: '/tv', count: 7654 },
-  { id: 10, name: 'Watch & Accessories', href: '/watch', count: 6543 },
-];
+// const categories = [
+//   { id: 1, name: 'Electronics Devices', href: '/electronics', count: 65867 },
+//   { id: 2, name: 'Computer & Laptop', href: '/computer', count: 45231 },
+//   { id: 3, name: 'Computer Accessories', href: '/accessories', count: 32145 },
+//   { id: 4, name: 'SmartPhone', href: '/smartphone', count: 28976 },
+//   { id: 5, name: 'Headphone', href: '/headphone', count: 15678 },
+//   { id: 6, name: 'Mobile Accessories', href: '/mobile-accessories', count: 12543 },
+//   { id: 7, name: 'Gaming Console', href: '/gaming', count: 9876 },
+//   { id: 8, name: 'Camera & Photo', href: '/camera', count: 8765 },
+//   { id: 9, name: 'TV & Screen Appliances', href: '/tv', count: 7654 },
+//   { id: 10, name: 'Watch & Accessories', href: '/watch', count: 6543 },
+// ];
 
 interface CategorySidebarProps {
   onPriceChange?: (min: number, max: number) => void;
@@ -22,7 +24,9 @@ interface CategorySidebarProps {
 
 const CategorySidebar = ({ onPriceChange, onCategoryChange }: CategorySidebarProps) => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
-  const [activeCategory, setActiveCategory] = useState<number>(1);
+  // const [activeCategory, setActiveCategory] = useState<number>(1);
+  const [activeCategory, setActiveCategory] = useState<string>('');
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const handlePriceChange = (value: number, index: 0 | 1) => {
     const newRange = [...priceRange] as [number, number];
@@ -30,10 +34,18 @@ const CategorySidebar = ({ onPriceChange, onCategoryChange }: CategorySidebarPro
     setPriceRange(newRange);
     onPriceChange?.(newRange[0], newRange[1]);
   };
-  const handleCategoryChange = (categoryname: string, categoryid: number) => {
+  // const handleCategoryChange = (categoryname: string, categoryid: number) => {
+  const handleCategoryChange = ( categoryid: string) => {
     setActiveCategory(categoryid);
-    onCategoryChange?.(categoryname);
+    onCategoryChange?.(categoryid);
   };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await getAllCategories();
+      setCategories(res);
+    }
+    fetchCategories();
+  }, [])
   return (
     <div className="w-72 bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-lg font-semibold mb-6">CATEGORY</h2>
@@ -42,19 +54,20 @@ const CategorySidebar = ({ onPriceChange, onCategoryChange }: CategorySidebarPro
           <li key={category.id}>
             <div 
               // href={category.href}
-              className={`flex items-center justify-between py-1 px-2 rounded-md transition-colors ${
+              className={`flex items-center justify-between py-1 px-2 rounded-md transition-colors cursor-pointer ${
                 activeCategory === category.id 
                   ? 'bg-blue-50 text-blue-600' 
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
               // onClick={() => setActiveCategory(category.id)}
-              onClick={() => handleCategoryChange(category.name, category.id)}
+              onClick={() => handleCategoryChange(category.id)}
             >
               <div className="flex items-center">
                 <span>{category.name}</span>
               </div>
               <div className="flex items-center text-sm text-gray-400">
-                <span>({category.count.toLocaleString()})</span>
+                {/* <span>({category.count.toLocaleString()})</span> */}
+                <span>({category._count.products})</span>
                 <ChevronRight size={16} className="ml-1" />
               </div>
             </div>

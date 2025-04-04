@@ -1,16 +1,17 @@
 'use client';
 
+import { getShoppingCart } from '@/lib/api/shoppingcart';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   images: string[];
 }
 
 interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -18,7 +19,7 @@ interface CartItem {
 }
 
 interface WishlistItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -28,13 +29,15 @@ interface ShopContextType {
   cart: CartItem[];
   wishlist: WishlistItem[];
   addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: number) => void;
-  updateCartQuantity: (productId: number, quantity: number) => void;
+  removeFromCart: (productId: string) => void;
+  updateCartQuantity: (productId: string, quantity: number) => void;
   addToWishlist: (product: Product) => void;
-  removeFromWishlist: (productId: number) => void;
-  isInWishlist: (productId: number) => boolean;
+  removeFromWishlist: (productId: string) => void;
+  isInWishlist: (productId: string) => boolean;
   cartTotal: number;
-  cartCount: number;
+  totalItems: number;
+  setTotalItems: (total: number) => void;
+  getTotalItems: () => Promise<void>;
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
@@ -42,6 +45,7 @@ const ShopContext = createContext<ShopContextType | undefined>(undefined);
 export function ShopProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
   // Load cart and wishlist from localStorage on mount
   useEffect(() => {
@@ -77,11 +81,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (productId: string) => {
     setCart(prevCart => prevCart.filter(item => item.id !== productId));
   };
 
-  const updateCartQuantity = (productId: number, quantity: number) => {
+  const updateCartQuantity = (productId: string, quantity: number) => {
     setCart(prevCart =>
       prevCart.map(item =>
         item.id === productId
@@ -106,13 +110,13 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const removeFromWishlist = (productId: number) => {
+  const removeFromWishlist = (productId: string) => {
     setWishlist(prevWishlist => 
       prevWishlist.filter(item => item.id !== productId)
     );
   };
 
-  const isInWishlist = (productId: number) => {
+  const isInWishlist = (productId: string) => {
     return wishlist.some(item => item.id === productId);
   };
 
@@ -121,10 +125,19 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     0
   );
 
-  const cartCount = cart.reduce(
-    (count, item) => count + item.quantity,
-    0
-  );
+  const getTotalItems = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        setTotalItems(0);
+        return;
+      }
+      const data = await getShoppingCart(userId);
+      setTotalItems(data.length);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   return (
     <ShopContext.Provider
@@ -138,7 +151,9 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
         removeFromWishlist,
         isInWishlist,
         cartTotal,
-        cartCount
+        setTotalItems,
+        totalItems,
+        getTotalItems
       }}
     >
       {children}
