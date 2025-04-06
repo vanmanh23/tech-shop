@@ -2,15 +2,16 @@ interface WishlistData {
   productId: string;
   userId: string;
 }
-export function getProducts() {
-  return fetch('/api/products', {
+export function getProducts(page: number) {
+  return fetch(`/api/products?page=${page}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   })
     .then(response => response.json())
-    .then(data => data.products);
+    .then(data => data);
+    // .then(data => data.products);
 }
 export const getProductById = async (productId: string) => {
   const res = await fetch(`/api/products/${productId}`);
@@ -78,3 +79,13 @@ export const removeProductFromWishlist = async (productId: string, userId: strin
     throw error;
   }
 };
+
+export const filterProductsByCost = async (min: number, max: number) => {
+  try{
+    const res = await fetch(`/api/products/search?query= &min=${min}&max=${max}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}

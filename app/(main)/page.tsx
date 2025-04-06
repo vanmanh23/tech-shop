@@ -12,6 +12,7 @@ import { getProducts } from '@/lib/api/products';
 import { Product } from '@prisma/client';
 import { useSearch } from '@/context/SearchContext';
 import { useShop } from '@/context/ShopContext';
+import Pagination from '@/components/Pagination';
 
 export default function Home() {
   const { searchParams } = useSearch();
@@ -22,7 +23,10 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [lengthProducts, setLengthProducts] = useState(0);
-
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  // const [minPrice, setMinPrice] = useState(0);
+  // const [maxPrice, setMaxPrice] = useState(1000);
   const handlePriceChange = (min: number, max: number) => {
     setFilteredProducts(
       products.filter(product => product.price >= min && product.price <= max)
@@ -63,14 +67,26 @@ export default function Home() {
 
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    console.log(selectedCategory);
-    // setFilteredProducts(products.filter(product => product.category === category));
   };
 
   useEffect(() => {
     const fetchProductsByCategory = async () => {
+      if (selectedCategory === "all") {
+        setIsLoading(true);
+        const res = await getProducts(1);
+        setCurrentPage(1);
+        setProducts(res.products);
+        setFilteredProducts(res.products);
+        if (res.length === 0) {
+          setLengthProducts(0);
+        } else {
+          setLengthProducts(res.products.length);
+        }
+        setSelectedCategory("");
+        setIsLoading(false);
+        return;
+      } 
       const res = await getProductsByCategoryId(selectedCategory);
-      console.log(res);
       setFilteredProducts(res);
       setProducts(res);
       if (res.length === 0) {
@@ -103,13 +119,19 @@ export default function Home() {
     }
     const fetchProducts = async () => {
       try {
-        const res = await getProducts();
-        setProducts(res);
-        setFilteredProducts(res);
+        setIsLoading(true);
+        const res = await getProducts(currentPage);
+        // setProducts(res);
+        // setFilteredProducts(res);
+        setTotalPages(res.totalPages);
+        setCurrentPage(res.page);
+        setProducts(res.products);
+        setFilteredProducts(res.products);
         if (res.length === 0) {
           setLengthProducts(0);
         } else {
-          setLengthProducts(res.length);
+          // setLengthProducts(res.length);
+          setLengthProducts(res.products.length);
         }
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -119,8 +141,7 @@ export default function Home() {
     };
     getTotalItems();
     fetchProducts();
-  }, []);
-
+  }, [currentPage]);
   useEffect(() => {
     const fetchProductsBySearch = async () => {
       const response = await fetch(`/api/products/search?${new URLSearchParams(searchParams).toString()}`);
@@ -135,9 +156,6 @@ export default function Home() {
     }
     fetchProductsBySearch();
   }, [searchParams])
-
-
-
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -246,13 +264,21 @@ export default function Home() {
           </div>
 
           {/* Empty State */}
-          {!isLoading && lengthProducts === 0 && (
+          {!isLoading && (lengthProducts === 0 || filteredProducts.length === 0) && (
             <div className="text-center py-12">
               <p className="text-gray-600">No products found matching your criteria.</p>
             </div>
           )}
         </div>
       </div>
+      <div className='flex justify-center items-center'>
+          <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+      
     </div>
   );
 }

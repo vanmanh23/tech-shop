@@ -21,13 +21,11 @@ const Header = () => {
   const { totalItems } = useShop();
   const [token, setToken] = useState<string | null>(null);
   const { data: session } = useSession();
-
-  console.log("session: ", session);
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     setToken(localStorage.getItem('access_token'));
   }, []);
-
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -41,6 +39,28 @@ const Header = () => {
     localStorage.removeItem('userId');
     // window.location.href = '/';
   };
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    const fetchUser = async () => {
+      try {
+        await fetch(`/api/auth?id=${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          setUser(data.name);
+        })
+        .catch(error => {
+          console.error("Error verifying token:", error);
+        });
+      } catch (error) {
+        console.error("Error verifying token:", error);
+      }
+    }
+    fetchUser();
+  }, []);
   return (
     <header className="bg-[#0066b2] text-white pt-2">
       {/* Top bar - Hidden on mobile */}
@@ -115,16 +135,21 @@ const Header = () => {
                 <User size={20} className="hover:text-gray-200 transition-colors" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {session && (
+                {(session || token) && (
                   <>
                     <DropdownMenuItem className="cursor-pointer">
-                      <p className="text-gray-800 font-bold text-sm">{session.user.name}</p>
+                      {session && (
+                        <p className="text-gray-800 font-bold text-sm">{session.user.name}</p>
+                      )}
+                      {token && (
+                        <p className="text-gray-800 font-bold text-sm">{user}</p>
+                      )}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
                 )}
                 {
-                  !session && (
+                  (!session && !token) && (
                     <>
                     <DropdownMenuItem className="cursor-pointer">
                   <Link href="/signin" className="flex items-center w-full">
@@ -140,8 +165,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 </>
                   )
-                }
-               
+                }         
                 
                 <DropdownMenuItem className="cursor-pointer">
                   <Link href="/shoppingcard" className="flex items-center w-full">
@@ -157,7 +181,7 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
                  {
-                  session && (
+                  (session || token) && (
                     <DropdownMenuItem className="cursor-pointer">
                   <div onClick={handleSignOut} className="flex items-center w-full">
                     <LogOut  className="mr-2 h-4 w-4" />
