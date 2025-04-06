@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     }
 
     // Set up sorting
-    let orderBy: any = {};
+    let orderBy: { price?: 'asc' | 'desc' | undefined; name?: 'asc' | 'desc' | undefined; rating?: 'asc' | 'desc' | undefined; } = {};
     if (validatedParams.sortBy) {
       switch (validatedParams.sortBy) {
         case 'price_asc':

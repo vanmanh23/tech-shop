@@ -9,7 +9,7 @@ import ImageUpload from './ImageUpload';
 export default function ProductForm() {
   const [imageUrl, setImageUrl] = useState('');
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(createProductSchema)
   });
 
@@ -20,7 +20,7 @@ export default function ProductForm() {
     };
 
     // Submit product data to API
-    const response = await fetch('/api/products', {
+    await fetch('/api/products', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(productData),

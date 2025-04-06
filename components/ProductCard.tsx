@@ -38,8 +38,6 @@ const ProductCard = ({
   isNew,
   isBestSeller,
   wishlist,
-  onAddToCart,
-  onAddToWishlist,
   onQuickView,
 }: ProductCardProps) => {
   const [isInWishlist, setIsInWishlist] = useState(false);

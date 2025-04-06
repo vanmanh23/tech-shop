@@ -31,6 +31,7 @@ export default function CategoriesPage() {
       setCategories(data.categories);
     } catch (error) {
       toast.error('Failed to fetch categories');
+      console.log("error: ", error);
     } finally {
       setLoading(false);
     }

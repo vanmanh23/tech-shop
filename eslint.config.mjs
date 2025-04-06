@@ -11,6 +11,13 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      "no-var": "off", // Disable var rule entirely (not ideal)
+      // OR better:
+      "no-var": ["error", { exceptions: ["prisma"] }], // Allow only 'prisma' var
+    },
+  }
 ];
 
 export default eslintConfig;

@@ -32,6 +32,7 @@ export default function ProductsPage() {
       setProducts(data.products);
     } catch (error) {
       toast.error('Failed to fetch products');
+      console.log("error: ", error);
     } finally {
       setLoading(false);
     }
