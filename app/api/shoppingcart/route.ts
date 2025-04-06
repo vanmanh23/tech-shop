@@ -4,8 +4,22 @@ import prisma from '@/lib/prisma';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
     const userId = searchParams.get('userId');
     
+    if (id) {
+      // Get single product
+      const product = await prisma.cart.findUnique({
+        where: { id }
+      });
+
+      if (!product) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      }
+
+      return NextResponse.json(product);
+    }
+
     if (!userId) {
       return NextResponse.json(
         { error: 'User ID is required' },
@@ -21,8 +35,7 @@ export async function GET(req: Request) {
         product: true
       }
     });
-
-    return NextResponse.json(products.map(item => item.product));
+    return NextResponse.json(products.map(item => item));
   } catch (error) {
     console.error('Error fetching shopping cart:', error);
     return NextResponse.json(
@@ -58,8 +71,8 @@ export async function POST(req: Request) {
 
     await prisma.cart.create({
       data: {
-        userId,
-        productId
+        userId: userId,
+        productId: productId
       }
     });
 
@@ -101,3 +114,32 @@ export async function DELETE(req: Request) {
     );
   }
 } 
+export async function PATCH(req: Request) {
+  try {
+    const updates = await req.json();
+    if (!Array.isArray(updates)) {
+      return NextResponse.json({ error: 'Updates must be an array' }, { status: 400 });
+    }
+    const updatedCarts = await prisma.$transaction(
+      updates.map(({ productId, quantity, id }) =>
+        prisma.cart.update({
+          where: {
+            id: id
+          },
+          data: { 
+            quantity,
+            productId 
+          }
+        })
+      )
+    );
+
+    return NextResponse.json(updatedCarts);
+  } catch (error) {
+    console.error('Error updating cart quantities:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

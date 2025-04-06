@@ -9,8 +9,7 @@ const Footer = () => {
       <div className="container mx-auto py-8 md:py-12 px-4 text-center">
         <h2 className="text-xl md:text-2xl font-semibold mb-2">Subscribe to our newsletter</h2>
         <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm md:text-base">
-          Praesent fringilla erat a lacinia egestas. Donec vehicula tempus massa sit
-          amet, Donec nec massa vitae. Cras nunc augue in dictum.
+            Get the latest news and updates from our store.
         </p>
         <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-2 sm:gap-0">
           <input
@@ -53,8 +52,8 @@ const Footer = () => {
                 CLICON
               </Link>
               <p className="text-gray-400 mb-4 text-sm md:text-base">
-                (8629) ****-****<br />
-                Barcelona, Spain<br />
+                (8386) ****-****<br />
+                Da Nang, Viet Nam<br />
               </p>
               <div className="flex items-center gap-2 justify-center sm:justify-start">
                 <span className="text-gray-400 text-sm">24/7 Hotline</span>
@@ -120,7 +119,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="bg-gray-900 border-t border-gray-800 py-4">
         <div className="container mx-auto px-4 text-center text-gray-400 text-xs md:text-sm">
-          © 2024 eCommerce Template © 2024. Design by Manh Nguyen
+          © 2025 eCommerce Template © 2025. Design by Manh Nguyen
         </div>
       </div>
     </footer>

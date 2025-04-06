@@ -3,16 +3,21 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const { id } = params;
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    console.log(id);
+    if (!id) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
     
     const user = await prisma.user.findUnique({
       where: { id },
       include: {
         wishlist: {
           include: {
-            product: true
+            product: true,
           }
         }
       }

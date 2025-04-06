@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingCart, Heart, User, Phone, ChevronDown, Facebook, Twitter, Instagram, Menu, X, Settings, LogIn, UserPlus, LogOut  } from 'lucide-react';
 import { useSearch } from '@/context/SearchContext';
@@ -12,13 +12,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useShop } from '@/context/ShopContext';
+import { useSession, signOut } from 'next-auth/react';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { searchParams, setSearchParams } = useSearch();
   const [searchText, setSearchText] = useState('');
   const { totalItems } = useShop();
-const token = localStorage.getItem('access_token');
+  const [token, setToken] = useState<string | null>(null);
+  const { data: session } = useSession();
+
+  console.log("session: ", session);
+
+  useEffect(() => {
+    setToken(localStorage.getItem('access_token'));
+  }, []);
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -27,8 +36,10 @@ const token = localStorage.getItem('access_token');
   };
 
   const handleSignOut = () => {
+    signOut({ callbackUrl: '/' });
     localStorage.removeItem('access_token');
-    window.location.href = '/';
+    localStorage.removeItem('userId');
+    // window.location.href = '/';
   };
   return (
     <header className="bg-[#0066b2] text-white pt-2">
@@ -86,7 +97,7 @@ const token = localStorage.getItem('access_token');
             {/* Phone - Hidden on mobile */}
             <div className="hidden md:flex items-center gap-2">
               <Phone size={20} />
-              <span>+1-202-555-0104</span>
+              <span>+1-202-555-####</span>
             </div>
             <Link href="/shoppingcard" className="relative">
               <ShoppingCart size={20} />
@@ -104,8 +115,16 @@ const token = localStorage.getItem('access_token');
                 <User size={20} className="hover:text-gray-200 transition-colors" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
+                {session && (
+                  <>
+                    <DropdownMenuItem className="cursor-pointer">
+                      <p className="text-gray-800 font-bold text-sm">{session.user.name}</p>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 {
-                  !token && (
+                  !session && (
                     <>
                     <DropdownMenuItem className="cursor-pointer">
                   <Link href="/signin" className="flex items-center w-full">
@@ -138,7 +157,7 @@ const token = localStorage.getItem('access_token');
                   </Link>
                 </DropdownMenuItem>
                  {
-                  token && (
+                  session && (
                     <DropdownMenuItem className="cursor-pointer">
                   <div onClick={handleSignOut} className="flex items-center w-full">
                     <LogOut  className="mr-2 h-4 w-4" />

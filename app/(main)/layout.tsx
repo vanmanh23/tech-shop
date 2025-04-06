@@ -7,7 +7,8 @@ import { ShopProvider } from "@/context/ShopContext";
 import { Toaster } from "react-hot-toast";
 import { SearchProvider } from '@/context/SearchContext';
 import { WishlistProvider } from '@/context/WishlistContext';
-
+// import { SessionProvider } from "next-auth/react";
+import {Providers} from "@/app/providers";
 // const inter = Inter({ subsets: ["latin"] });
 // const inter = Inter({ 
 //   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({
         <ShopProvider>
           <SearchProvider>
             <WishlistProvider>
+              <Providers>
               <div className="min-h-screen flex flex-col">
                 <Header />
                 <main  className="flex-1 bg-gray-50">
@@ -39,6 +41,7 @@ export default function RootLayout({
                 </main>
                 <Footer />
               </div>
+              </Providers>
               <Toaster position="bottom-right" />
             </WishlistProvider>
           </SearchProvider>

@@ -1,34 +1,13 @@
-// import { Inter } from 'next/font/google';
-// import type { Metadata } from 'next';
-// import './globals.css';
-
-// const inter = Inter({ 
-//   subsets: ['latin'],
-//   display: 'swap',
-//   variable: '--font-inter'
-// });
-
-// export const metadata: Metadata = {
-//   title: 'Tech Shop',
-//   description: 'Your one-stop shop for all tech needs',
-// };
-
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="en" className={inter.variable}>
-//       <body className="font-sans">
-//         {children}
-//       </body>
-//     </html>
-//   );
-// }
-
-
+import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "./providers";
+import { Toaster } from "react-hot-toast";
+// import { SessionProvider } from "next-auth/react";
+
+export const metadata: Metadata = {
+  title: 'Tech Shop',
+  description: 'Your one-stop shop for all tech needs',
+};
 
 export default function RootLayout({
     children,
@@ -38,7 +17,10 @@ export default function RootLayout({
     return (
       <html>
         <body>
+          <Providers>
           {children}
+          <Toaster position="bottom-right" />
+          </Providers>
         </body>
       </html>
     );

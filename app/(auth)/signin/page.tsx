@@ -1,16 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Facebook, Twitter, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { signIn } from '@/lib/api/auth';
+import { Login } from '@/lib/api/auth';
+import { signIn, useSession } from "next-auth/react";
 
 export default function SignInPage() {
   const router = useRouter();
   const { setUser } = useAuth();
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -18,22 +20,35 @@ export default function SignInPage() {
     rememberMe: false
   });
 
+  useEffect(() => {
+    if (session) {
+      router.push('/');
+    }
+  }, [session, router]);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signIn('google', { callbackUrl: '/' });
+      if (result?.error) {
+        toast.error('Failed to sign in with Google');
+      }
+    } catch (error) {
+      toast.error('An error occurred during sign in');
+      console.error("Google sign-in error:", error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const result = await signIn(formData);
+      const result = await Login(formData);
       localStorage.setItem('access_token', result.user.token);
       setUser(result.user);
       console.log("result.user.role: ",result.user.role);
       toast.success('Signed in successfully!');
-
-      if (result.user.role === 0) {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      router.push('/');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign in');
     } finally {
@@ -157,7 +172,8 @@ export default function SignInPage() {
 
             <button
               type="button"
-              className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#DB4437] hover:bg-[#E15647] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-google"
+              onClick={handleGoogleSignIn}
+              className="cursor-pointer w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#DB4437] hover:bg-[#E15647] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-google"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

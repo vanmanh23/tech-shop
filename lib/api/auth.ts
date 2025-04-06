@@ -11,7 +11,7 @@ interface SignUpData {
   role?: number;
 }
 
-export async function signIn(data: SignInData) {
+export async function Login(data: SignInData) {
   try {
     const response = await fetch('/api/auth/signin', {
       method: 'POST',
@@ -63,7 +63,6 @@ export async function signOut() {
 
 export async function signUp(data: SignUpData) {
   try {
-    console.log("data222222222: ", data);
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: {
@@ -105,13 +104,6 @@ export async function verifyToken(token: string) {
     })
     const data = await response.json();
     return data.userId;
-    // .then(res => res.json())
-    // .then(data => {
-    //   return data.userId;
-    // })
-    // .catch(error => {
-    //   console.error("Error verifying token:", error);
-    // });
   } catch (error) {
     console.error("Error verifying token:", error);
   }

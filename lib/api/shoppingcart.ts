@@ -2,6 +2,14 @@ interface ShoppingCartData {
     productId: string;
     userId: string;
 }
+interface UpdateShoppingCartData {
+  id: string;
+  productId: string;
+  quantity: number;
+}
+interface updateShoppingCartDatas {
+  data: UpdateShoppingCartData[];
+}
 export const addProductToShoppingCart = async (data: ShoppingCartData) => {
     try {
       const response = await fetch('/api/shoppingcart', {
@@ -51,3 +59,30 @@ export const addProductToShoppingCart = async (data: ShoppingCartData) => {
     }
   };
   
+  export const getShoppingCartById = async (id: string) => {
+    try {
+      const res = await fetch(`/api/shoppingcart?id=${id}`);
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching shopping cart:', error);
+      throw error;
+    }
+  };
+
+  export const updateShoppingCart = async (data: updateShoppingCartDatas) => {
+    try {
+      const res = await fetch('/api/shoppingcart', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      return result;
+    } catch (error) {
+      console.error('Error updating shopping cart:', error);
+      throw error;
+    }
+  }
