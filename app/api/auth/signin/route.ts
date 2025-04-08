@@ -51,7 +51,6 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
-
     // Tạo response với cookie
     const response = NextResponse.json({ 
       user: {
@@ -69,7 +68,6 @@ export async function POST(req: Request) {
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7 // 7 days
     });
-
     return response;
   } catch (error) {
     console.error('Signin error:', error);

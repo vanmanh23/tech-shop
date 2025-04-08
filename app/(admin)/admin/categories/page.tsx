@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image'
 
 interface Category {
   id: string;
@@ -98,7 +99,7 @@ export default function CategoriesPage() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     {category.image && (
-                      <img
+                      <Image
                         src={category.image}
                         alt={category.name}
                         className="h-10 w-10 rounded-full object-cover mr-3"

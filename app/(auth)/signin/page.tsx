@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Facebook, Twitter, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -153,22 +153,6 @@ export default function SignInPage() {
             <div className="text-center text-sm text-gray-500">
               or
             </div>
-
-            <button
-              type="button"
-              className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#3b5998] hover:bg-[#4c70ba] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-facebook"
-            >
-              <Facebook size={20} />
-              Continue with Facebook
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1DA1F2] hover:bg-[#2795D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-twitter"
-            >
-              <Twitter size={20} />
-              Continue with Twitter
-            </button>
 
             <button
               type="button"

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image'
 
 interface Product {
   id: string;
@@ -101,7 +102,7 @@ export default function ProductsPage() {
               <tr key={product.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <img
+                    <Image
                       src={product.images[0]}
                       alt={product.name}
                       className="h-10 w-10 rounded-full object-cover mr-3"

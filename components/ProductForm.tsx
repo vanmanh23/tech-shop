@@ -9,9 +9,12 @@ import ImageUpload from './ImageUpload';
 export default function ProductForm() {
   const [imageUrl, setImageUrl] = useState('');
 
-  const { handleSubmit, formState: { errors } } = useForm({
+  const { handleSubmit } = useForm({
     resolver: zodResolver(createProductSchema)
   });
+  // const { handleSubmit, formState: { errors } } = useForm({
+  //   resolver: zodResolver(createProductSchema)
+  // });
 
   const onSubmit = async (data: any) => {
     const productData = {

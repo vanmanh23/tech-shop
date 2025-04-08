@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             Sign In
           </button>
           <div className="mt-1 text-sm">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <button 
               className="underline text-blue-500"
               onClick={() => router.push('/signup')}

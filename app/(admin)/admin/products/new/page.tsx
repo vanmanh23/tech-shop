@@ -44,6 +44,7 @@ export default function NewProductPage() {
       setCategories(data.categories);
     } catch (error) {
       toast.error('Failed to fetch categories');
+      console.error('Fetch categories error:', error);
     }
   };
 
@@ -75,6 +76,7 @@ export default function NewProductPage() {
       toast.success('Images uploaded successfully');
     } catch (error) {
       toast.error('Failed to upload images');
+      console.error('Upload error:', error);
     } finally {
       setUploading(false);
     }

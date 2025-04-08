@@ -73,7 +73,7 @@ export default function ProductDetailContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg p-6 text-center">
           <h2 className="text-xl font-semibold text-gray-900">Product not found</h2>
-          <p className="text-gray-600 mt-2">The product you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mt-2">The product you&apos;re looking for doesn&apos;t exist.</p>
         </div>
       </div>
     );
@@ -104,7 +104,7 @@ export default function ProductDetailContent() {
       try {
         await navigator.share({
           title: product?.name,
-          text: product?.description,
+          text: product?.description || '',
           url: window.location.href,
         });
         toast.success('Shared successfully!');
@@ -159,7 +159,7 @@ export default function ProductDetailContent() {
                     key={i}
                     size={16}
                     className={`${
-                      i < Math.floor(product?.rating) ? 'text-yellow-400' : 'text-gray-300'
+                      i < Math.floor(4) ? 'text-yellow-400' : 'text-gray-300'
                     } fill-current`}
                   />
                 ))}
@@ -215,7 +215,7 @@ export default function ProductDetailContent() {
                 {/* ))} */}
             </div>
 
-            <div className="flex items-center gap-6 mb-8">
+            <div className="flex xl:flex-row 2xl:flex-row md:flex-row sm:flex-row flex-col items-center gap-6 mb-8">
               <div className="flex items-center border rounded-lg">
                 <button
                   onClick={() => handleQuantityChange(-1)}

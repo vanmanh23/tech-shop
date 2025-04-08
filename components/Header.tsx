@@ -60,7 +60,7 @@ const Header = () => {
       }
     }
     fetchUser();
-  }, []);
+  }, [token]);
   return (
     <header className="bg-[#0066b2] text-white pt-2">
       {/* Top bar - Hidden on mobile */}
@@ -89,7 +89,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold">
-            CLICON
+            TechShop
           </Link>
 
           {/* Search bar - Hidden on mobile */}
@@ -132,7 +132,7 @@ const Header = () => {
             {/* User Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger className="focus:outline-none">
-                <User size={20} className="hover:text-gray-200 transition-colors" />
+                <User size={20} className="hover:text-gray-200 transition-colors cursor-pointer" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 {(session || token) && (
@@ -205,14 +205,13 @@ const Header = () => {
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center gap-8 mt-4">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <span>All Category</span>
-            <ChevronDown size={16} />
-          </div>
-          <Link href="/shop" className="hover:text-gray-200">Find Shop</Link>
-          <Link href="/coupons" className="hover:text-gray-200">Coupons</Link>
+          <Link href="/" className="flex items-center gap-2 cursor-pointer">
+            {/* <Link href="/" className="hover:text-gray-200"> */}
+              <span>All Category</span>
+              <ChevronDown size={16} />
+            {/* </Link> */}
+          </Link>
           <Link href="/contact" className="hover:text-gray-200">Customer Support</Link>
-          <Link href="/shipping" className="hover:text-gray-200">Free Shipping</Link>
         </nav>
 
         {/* Mobile Search - Only visible on mobile */}

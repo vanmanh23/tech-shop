@@ -23,7 +23,6 @@ export async function GET(request: Request) {
     // Validate search parameters
     const validatedParams = searchParamsSchema.parse(params);
 
-    // Build where clause for filtering
     const where: any = {
       OR: [
         { name: { contains: validatedParams.query, mode: 'insensitive' } },
@@ -122,7 +121,7 @@ export async function GET(request: Request) {
   }
 }
 
-interface SearchParams {
+type SearchParams = {
   query: string;
   category?: string;
   minPrice?: string;
@@ -133,7 +132,8 @@ interface SearchParams {
   limit?: string;
 }
 
-export async function searchProducts(params: SearchParams) {
+// export async function searchProducts(params: SearchParams ) {
+export async function searchProducts(params: SearchParams ) {
   const searchParams = new URLSearchParams();
   
   // Add required params

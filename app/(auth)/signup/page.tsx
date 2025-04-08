@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import { Facebook, Twitter, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { signUp } from '@/lib/api/auth';
+import { signIn } from 'next-auth/react';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -55,7 +56,17 @@ export default function SignUpPage() {
       [e.target.name]: e.target.value
     }));
   };
-
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signIn('google', { callbackUrl: '/' });
+      if (result?.error) {
+        toast.error('Failed to sign in with Google');
+      }
+    } catch (error) {
+      toast.error('An error occurred during sign in');
+      console.error("Google sign-in error:", error);
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       {/* Back Button */}
@@ -135,24 +146,6 @@ export default function SignUpPage() {
                 onChange={handleChange}
               />
             </div>
-
-            {/* <div className="flex items-center">
-              <input
-                id="agreeToTerms"
-                name="agreeToTerms"
-                type="checkbox"
-                required
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                checked={formData.agreeToTerms}
-                onChange={handleChange}
-              />
-              <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
-                Creating an account means you're okay with our{' '}
-                <Link href="/terms" className="text-blue-600 hover:underline">Terms and Conditions</Link>
-                {' '}and our{' '}
-                <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>.
-              </label>
-            </div> */}
           </div>
 
           <div className="space-y-3">
@@ -160,43 +153,22 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={loading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+              className={`cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
               {loading ? 'Creating account...' : 'Sign up'}
             </button>
           </div>
-            {/* <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#F85606] hover:bg-[#f86626] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              Register
-            </button> */}
 
             <div className="text-center text-sm text-gray-500">
               or
             </div>
 
             <button
+              onClick={handleGoogleSignIn}
               type="button"
-              className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#3b5998] hover:bg-[#4c70ba] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-facebook"
-            >
-              <Facebook size={20} />
-              Register with Facebook
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1DA1F2] hover:bg-[#2795D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-twitter"
-            >
-              <Twitter size={20} />
-              Register with Twitter
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#DB4437] hover:bg-[#E15647] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-google"
+              className="cursor-pointer w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#DB4437] hover:bg-[#E15647] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-google"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

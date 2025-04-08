@@ -1,10 +1,14 @@
-import { NextResponse } from 'next/server';
+import {  NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { updateCategorySchema } from '@/lib/validations/category';
 
 const prisma = new PrismaClient();
 
 // GET /api/categories/[id]
+// export async function GET(
+//   req: Request,
+//   { params }: { params: { id: string } }
+// ) {
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }

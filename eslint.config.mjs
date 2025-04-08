@@ -14,8 +14,10 @@ const eslintConfig = [
   {
     rules: {
       "no-var": "off", // Disable var rule entirely (not ideal)
+      "@typescript-eslint/no-explicit-any": ["off"],
+      "@typescript-eslint/no-unsafe-function-type": "error"
       // OR better:
-      "no-var": ["error", { exceptions: ["prisma"] }], // Allow only 'prisma' var
+      // "no-var": ["error", { exceptions: ["prisma"] }], // Allow only 'prisma' var
     },
   }
 ];

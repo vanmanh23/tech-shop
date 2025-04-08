@@ -139,9 +139,10 @@ export default function Home() {
         setIsLoading(false);
       }
     };
-    getTotalItems();
+    // getTotalItems();
     fetchProducts();
   }, [currentPage]);
+  getTotalItems();
   useEffect(() => {
     const fetchProductsBySearch = async () => {
       const response = await fetch(`/api/products/search?${new URLSearchParams(searchParams).toString()}`);
@@ -254,6 +255,7 @@ export default function Home() {
                 <ProductCard
                   key={product.id}
                   {...product}
+                  rating={4}
                   image={product.images[0]}
                   onAddToCart={handleAddToCart}
                   onAddToWishlist={handleAddToWishlist}

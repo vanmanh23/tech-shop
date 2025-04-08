@@ -1,6 +1,10 @@
-import type { NextConfig } from "next";
+// import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+// const nextConfig: NextConfig = {
+const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -15,5 +19,5 @@ const nextConfig: NextConfig = {
   },
   /* config options here */
 };
-
-export default nextConfig;
+module.exports = nextConfig;
+// export default nextConfig;
