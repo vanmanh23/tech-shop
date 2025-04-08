@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { createCategorySchema } from '@/lib/validations/category';
