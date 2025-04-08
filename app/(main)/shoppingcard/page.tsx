@@ -45,13 +45,17 @@ export default function ShoppingCart() {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
+        if (typeof window !== 'undefined') {
+          const userId = localStorage.getItem('userId');
+          if (!userId) {
+            setIsLoading(false);
+            return;
+          }
+          const data = await getShoppingCart(userId);
+          setCartItems(data);
+        } else {
           setIsLoading(false);
-          return;
         }
-        const data = await getShoppingCart(userId);
-        setCartItems(data);
       } catch (error) {
         console.error('Error fetching cart items:', error);
       } finally {

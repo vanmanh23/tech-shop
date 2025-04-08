@@ -24,8 +24,11 @@ const Header = () => {
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    setToken(localStorage.getItem('access_token'));
+    if (typeof window !== 'undefined') {
+      setToken(localStorage.getItem('access_token'));
+    }
   }, []);
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -35,32 +38,38 @@ const Header = () => {
 
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('userId');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('userId');
+    }
     // window.location.href = '/';
   };
+
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    const fetchUser = async () => {
-      try {
-        await fetch(`/api/auth?id=${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          setUser(data.name);
-        })
-        .catch(error => {
+    if (typeof window !== 'undefined') {
+      const userId = localStorage.getItem('userId');
+      const fetchUser = async () => {
+        try {
+          await fetch(`/api/auth?id=${userId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          .then(res => res.json())
+          .then(data => {
+            setUser(data.name);
+          })
+          .catch(error => {
+            console.error("Error verifying token:", error);
+          });
+        } catch (error) {
           console.error("Error verifying token:", error);
-        });
-      } catch (error) {
-        console.error("Error verifying token:", error);
+        }
       }
+      fetchUser();
     }
-    fetchUser();
   }, [token]);
+
   return (
     <header className="bg-[#0066b2] text-white pt-2">
       {/* Top bar - Hidden on mobile */}

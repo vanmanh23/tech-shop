@@ -44,13 +44,16 @@ export default function SignInPage() {
 
     try {
       const result = await Login(formData);
-      localStorage.setItem('access_token', result.user.token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('access_token', result.user.token);
+      }
       setUser(result.user);
       console.log("result.user.role: ",result.user.role);
       toast.success('Signed in successfully!');
       router.push('/');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to sign in');
+      toast.error('Invalid email or password');
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }

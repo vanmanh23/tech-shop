@@ -15,13 +15,17 @@ export default function WishlistPage() {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
+        if (typeof window !== 'undefined') {
+          const userId = localStorage.getItem('userId');
+          if (!userId) {
+            setIsLoading(false);
+            return;
+          }
+          const data = await getWishlist(userId);
+          setWishlist(data);
+        } else {
           setIsLoading(false);
-          return;
         }
-        const data = await getWishlist(userId);
-        setWishlist(data);
       } catch (error) {
         console.error('Error fetching wishlist:', error);
       } finally {

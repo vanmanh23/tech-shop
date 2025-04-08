@@ -49,16 +49,20 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   // Load cart and wishlist from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    const savedWishlist = localStorage.getItem('wishlist');
-    if (savedCart) setCart(JSON.parse(savedCart));
-    if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      const savedWishlist = localStorage.getItem('wishlist');
+      if (savedCart) setCart(JSON.parse(savedCart));
+      if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+    }
   }, []);
 
   // Save cart and wishlist to localStorage when they change
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
   }, [cart, wishlist]);
 
   const addToCart = (product: Product, quantity: number) => {
@@ -127,13 +131,17 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   const getTotalItems = async () => {
     try {
-      const userId = localStorage.getItem('userId');
-      if (!userId) {
+      if (typeof window !== 'undefined') {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          setTotalItems(0);
+          return;
+        }
+        const data = await getShoppingCart(userId);
+        setTotalItems(data.length);
+      } else {
         setTotalItems(0);
-        return;
       }
-      const data = await getShoppingCart(userId);
-      setTotalItems(data.length);
     } catch (error) {
       throw error;
     }

@@ -98,25 +98,29 @@ export default function Home() {
     fetchProductsByCategory();
   }, [selectedCategory]);
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        fetch('/api/auth/verify', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          localStorage.setItem('userId', data.userId);
-        })
-        .catch(error => {
+    // Check if we're in a browser environment before accessing localStorage
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          fetch('/api/auth/verify', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          .then(res => res.json())
+          .then(data => {
+            localStorage.setItem('userId', data.userId);
+          })
+          .catch(error => {
+            console.error("Error verifying token:", error);
+          });
+        } catch (error) {
           console.error("Error verifying token:", error);
-        });
-      } catch (error) {
-        console.error("Error verifying token:", error);
+        }
       }
     }
+    
     const fetchProducts = async () => {
       try {
         setIsLoading(true);

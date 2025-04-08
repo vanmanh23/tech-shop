@@ -42,8 +42,9 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const [isInWishlist, setIsInWishlist] = useState(false);
   const handleAddToCart = async () => {
-
     try {
+      if (typeof window === 'undefined') return;
+      
       const token = localStorage.getItem("access_token");
       if (!token) {
         toast.error("Please login to add to wishlist");
@@ -67,6 +68,8 @@ const ProductCard = ({
   };
   const handleWishlistClick = async () => {
     try {
+      if (typeof window === 'undefined') return;
+      
       const token = localStorage.getItem("access_token");
       if (!token) {
         toast.error("Please login to add to wishlist");
