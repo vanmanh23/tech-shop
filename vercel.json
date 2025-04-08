@@ -1,17 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["sin1"],
-  "env": {
-    "NEXTAUTH_URL": "http://tech-shop-five-hazel.vercel.app",
-    "NEXTAUTH_SECRET": "manh123"
-  },
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/next",
+      "config": {
+        "installCommand": "npm install && npx prisma generate",
+        "buildCommand": "npm run build"
+      }
     }
   ],
   "routes": [
@@ -20,4 +16,4 @@
       "dest": "/api/$1"
     }
   ]
-} 
+}
