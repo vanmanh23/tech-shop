@@ -1,4 +1,4 @@
-// export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
@@ -6,7 +6,12 @@ import { AuthOptions } from "next-auth";
 import { sendLoginNotification } from "@/lib/mailer";
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Use a singleton pattern for PrismaClient to prevent connection issues in serverless environments
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 declare module "next-auth" {
   interface Session {
@@ -31,7 +36,7 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   // debug: process.env.NODE_ENV === "development",
-  debug: true,
+  debug: process.env.NODE_ENV === "development",
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === "google" && profile?.email) {
