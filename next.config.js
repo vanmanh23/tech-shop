@@ -3,7 +3,7 @@
 // const nextConfig: NextConfig = {
 const nextConfig = {
   experimental: {
-    appDir: true,
+    // appDir: true, // Không cần thiết trong Next.js 14
   },
   typescript: {
     ignoreBuildErrors: true,

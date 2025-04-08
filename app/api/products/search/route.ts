@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 // Validation schema for search parameters
 const searchParamsSchema = z.object({
-  query: z.string().min(1, 'Search query is required'),
+  query: z.string().optional().default(''),
   category: z.string().optional(),
   minPrice: z.string().optional(),
   maxPrice: z.string().optional(),
@@ -25,14 +25,18 @@ export async function GET(request: Request) {
     // Validate search parameters
     const validatedParams = searchParamsSchema.parse(params);
 
-    const where: any = {
-      OR: [
+    // Build where clause
+    const where: any = {};
+    
+    // Only add search conditions if query is not empty
+    if (validatedParams.query && validatedParams.query.trim() !== '') {
+      where.OR = [
         { name: { contains: validatedParams.query, mode: 'insensitive' } },
         { description: { contains: validatedParams.query, mode: 'insensitive' } },
         { brand: { contains: validatedParams.query, mode: 'insensitive' } },
         { model: { contains: validatedParams.query, mode: 'insensitive' } },
-      ],
-    };
+      ];
+    }
 
     // Add category filter if provided
     if (validatedParams.category) {
@@ -99,26 +103,19 @@ export async function GET(request: Request) {
     // Calculate pagination info
     const totalPages = Math.ceil(total / limit);
 
+    // Return response
     return NextResponse.json({
       products,
-      pagination: {
-        total,
-        totalPages,
-        currentPage: page,
-        limit,
-      },
+      total,
+      page,
+      limit,
+      totalPages,
     });
   } catch (error) {
     console.error('Search error:', error);
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid search parameters', details: error.errors },
-        { status: 400 }
-      );
-    }
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: 'Failed to search products' },
+      { status: 400 }
     );
   }
 }

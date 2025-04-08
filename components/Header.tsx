@@ -48,6 +48,7 @@ const Header = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const userId = localStorage.getItem('userId');
+      if(userId) {
       const fetchUser = async () => {
         try {
           await fetch(`/api/auth?id=${userId}`, {
@@ -67,6 +68,7 @@ const Header = () => {
         }
       }
       fetchUser();
+    }
     }
   }, [token]);
 
