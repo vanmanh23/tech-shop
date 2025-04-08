@@ -40,24 +40,36 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === "google" && profile?.email) {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: profile.email },
-        });
-    
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              email: profile.email,
-              name: profile.name,
-              password: "",
-              role: 1,
-            },
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: profile.email },
           });
-        }
     
-        // Gửi email thông báo
-        await sendLoginNotification(profile.email, profile.name);
-        return true;
+          if (!existingUser) {
+            await prisma.user.create({
+              data: {
+                email: profile.email,
+                name: profile.name,
+                password: "",
+                role: 1,
+              },
+            });
+          }
+    
+          // Try to send email notification, but don't fail if it doesn't work
+          try {
+            await sendLoginNotification(profile.email, profile.name);
+          } catch (emailError) {
+            console.error("Failed to send login notification:", emailError);
+            // Continue with login even if email fails
+          }
+          
+          return true;
+        } catch (error) {
+          console.error("Error during sign in:", error);
+          // Still allow sign in even if database operations fail
+          return true;
+        }
       }
     
       return false;
