@@ -14,15 +14,17 @@ import {
 import { useShop } from '@/context/ShopContext';
 import { useSession, signOut } from 'next-auth/react';
 import { getUserByEmail } from '@/lib/api/auth';
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { searchParams, setSearchParams } = useSearch();
+  const { searchParams, setSearchParams, clearSearch } = useSearch();
   const [searchText, setSearchText] = useState('');
   const { totalItems } = useShop();
   const [token, setToken] = useState<string | null>(null);
   const { data: session } = useSession();
   const [user, setUser] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -91,6 +93,10 @@ const Header = () => {
       fetchUser();
     }
   }, [session])
+  const clickLogo = () => {
+    clearSearch();
+    router.push('/');
+  }
   return (
     <header className="bg-[#0066b2] text-white pt-2">
       {/* Top bar - Hidden on mobile */}
@@ -118,9 +124,9 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold">
+          <div onClick={clickLogo} className="text-2xl font-bold">
             TechShop
-          </Link>
+          </div>
 
           {/* Search bar - Hidden on mobile */}
           <div className="hidden md:block flex-1 max-w-2xl mx-8">
@@ -235,12 +241,12 @@ const Header = () => {
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center gap-8 mt-4">
-          <Link href="/" className="flex items-center gap-2 cursor-pointer">
+          <div onClick={clickLogo} className="flex items-center gap-2 cursor-pointer">
             {/* <Link href="/" className="hover:text-gray-200"> */}
               <span>All Category</span>
               <ChevronDown size={16} />
             {/* </Link> */}
-          </Link>
+          </div>
           <Link href="/contact" className="hover:text-gray-200">Customer Support</Link>
         </nav>
 
