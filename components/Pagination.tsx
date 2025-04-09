@@ -9,18 +9,15 @@ interface PaginationProps {
 const Pagination = ({ totalPages, currentPage, onPageChange }: PaginationProps) => {
     const handlePageChange = (page: number) => {
         onPageChange(page);
-        console.log("currentPage2: ", currentPage);
     }
     const minusPage = () => {
         if (currentPage > 1) {
             onPageChange(currentPage - 1);
-            console.log("currentPage: ", currentPage);
         }
     }
     const plusPage = () => {
         if (currentPage < totalPages) {
             onPageChange(currentPage + 1);
-            console.log("currentPage: ", currentPage);
         }
     }
     return (

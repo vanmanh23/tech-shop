@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     const token = jwt.sign(
       { 
         userId: user.id,
-        role: user.role  // Thêm role vào token
+        role: user.role  
       },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
@@ -62,7 +62,6 @@ export async function POST(req: Request) {
         token: token
       }
     });
-
     // Set cookie
     response.cookies.set('token', token, {
       httpOnly: true,

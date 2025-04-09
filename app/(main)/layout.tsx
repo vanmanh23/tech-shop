@@ -9,12 +9,6 @@ import { SearchProvider } from '@/context/SearchContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 // import { SessionProvider } from "next-auth/react";
 import {Providers} from "@/app/providers";
-// const inter = Inter({ subsets: ["latin"] });
-// const inter = Inter({ 
-//   subsets: ['latin'],
-//   display: 'swap',
-//   variable: '--font-inter'
-// });
 
 export const metadata: Metadata = {
   title: "Tech Shop - Your Ultimate Electronics Store",

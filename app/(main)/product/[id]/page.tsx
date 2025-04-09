@@ -47,7 +47,6 @@ export default function ProductDetailContent() {
       isMounted = false;
     };
   }, [productId]);
-  console.log("product", product);
   // Show loading state
   if (isLoading) {
     return (

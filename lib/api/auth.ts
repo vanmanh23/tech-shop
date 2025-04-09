@@ -108,3 +108,28 @@ export async function verifyToken(token: string) {
     console.error("Error verifying token:", error);
   }
 }
+
+export const getUserByEmail = async (email: string) => {
+  try {
+    const res = await fetch(`/api/auth?email=${email}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error getting user by email:", error);
+    throw error;
+  }
+};
+// export const createToken = async (userId: string) => {
+//   try {
+//     const payload = {
+//       userId,
+//       role : 1,
+//       exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30) // 30 days
+//     };
+//     const token = jwt.sign(payload, process.env.NEXT_PUBLIC_JWT_SECRET || 'secret');
+//     return token;
+//   } catch (error) {
+//     console.error("Error creating token:", error);
+//     throw error;
+//   }
+// }

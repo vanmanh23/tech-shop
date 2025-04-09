@@ -19,7 +19,6 @@ export default function NewCategoryPage() {
     setLoading(true);
 
     try {
-        console.log("formData: ",formData);
       const response = await fetch('/api/categories', {
         method: 'POST',
         headers: {

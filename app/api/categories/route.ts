@@ -57,9 +57,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
       const data = await req.json();
-      console.log("req22222: ",data);
     const validationResult = createCategorySchema.safeParse(data);
-    console.log("validationResult: ",validationResult);
     if (!validationResult.success) {
       return NextResponse.json(
         { 

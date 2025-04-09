@@ -24,7 +24,6 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log("formData: ", formData);
     // Kiểm tra password match
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');

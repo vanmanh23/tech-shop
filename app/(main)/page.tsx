@@ -13,6 +13,7 @@ import { Product } from '@prisma/client';
 import { useSearch } from '@/context/SearchContext';
 import { useShop } from '@/context/ShopContext';
 import Pagination from '@/components/Pagination';
+// import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const { searchParams } = useSearch();
@@ -25,6 +26,8 @@ export default function Home() {
   const [lengthProducts, setLengthProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // const { data: session } = useSession();
   // const [minPrice, setMinPrice] = useState(0);
   // const [maxPrice, setMaxPrice] = useState(1000);
   const handlePriceChange = (min: number, max: number) => {

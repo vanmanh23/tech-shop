@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useShop } from '@/context/ShopContext';
 import { useSession, signOut } from 'next-auth/react';
+import { getUserByEmail } from '@/lib/api/auth';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,6 +42,7 @@ const Header = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('access_token');
       localStorage.removeItem('userId');
+      localStorage.removeItem('token');
     }
     // window.location.href = '/';
   };
@@ -71,7 +73,24 @@ const Header = () => {
     }
     }
   }, [token]);
-
+  ///
+  useEffect(() => {
+    if(session?.user.email) {
+      const fetchUser = async () => {
+        try {
+          const userInfo = await getUserByEmail(session?.user?.email || '');
+          setUser(userInfo.user.name);
+          if (userInfo.token) {
+            localStorage.setItem('access_token', userInfo.token);
+            localStorage.setItem('userId', userInfo.user.id);
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      }
+      fetchUser();
+    }
+  }, [session])
   return (
     <header className="bg-[#0066b2] text-white pt-2">
       {/* Top bar - Hidden on mobile */}

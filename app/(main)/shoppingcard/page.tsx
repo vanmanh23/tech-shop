@@ -45,7 +45,7 @@ export default function ShoppingCart() {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        if (typeof window !== 'undefined') {
+        // if (typeof window !== 'undefined') {
           const userId = localStorage.getItem('userId');
           if (!userId) {
             setIsLoading(false);
@@ -53,9 +53,9 @@ export default function ShoppingCart() {
           }
           const data = await getShoppingCart(userId);
           setCartItems(data);
-        } else {
-          setIsLoading(false);
-        }
+        // } else {
+          // setIsLoading(false);
+        // }
       } catch (error) {
         console.error('Error fetching cart items:', error);
       } finally {
@@ -174,11 +174,11 @@ export default function ShoppingCart() {
             </div>
 
             {/* Cart Items */}
-            <div className="space-y-4 mt-4">
+            <div className="space-y-4 mt-4 overflow-x-scroll">
               {cartItems.map((item) => (
-                <div key={item.id} className="grid grid-cols-12 gap-4 py-4 border-b border-gray-300">
-                  <div className="col-span-5 flex gap-4">
-                    <div className="w-20 h-20 relative">
+                <div key={item.id} className="min-w-[700px] grid grid-cols-12 gap-4 py-4 border-b border-gray-300">
+                  <div className="col-span-5 flex gap-4 ">
+                    <div className="w-15 h-15 relative">
                       <Image
                         src={item.product.images[0]}
                         alt={item.product.name}
@@ -211,7 +211,7 @@ export default function ShoppingCart() {
                     </div>
                   </div>
                   <div className="col-span-1 flex items-center justify-center">
-                    <button className="p-1 hover:bg-gray-100 rounded cursor-pointer">
+                    <button className="p-1 hover:bg-gray-100 rounded cursor-pointer" >
                       <Trash size={16} color='red' />
                     </button>
                   </div>

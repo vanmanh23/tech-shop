@@ -37,18 +37,16 @@ export default function SignInPage() {
       console.error("Google sign-in error:", error);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const result = await Login(formData);
+      setUser(result.user);
       if (typeof window !== 'undefined') {
         localStorage.setItem('access_token', result.user.token);
       }
-      setUser(result.user);
-      console.log("result.user.role: ",result.user.role);
       toast.success('Signed in successfully!');
       router.push('/');
     } catch (error) {
